@@ -1,0 +1,28 @@
+@import "./utils/variables";
+@import "./utils/mixins";
+@import "./utils/%placeholders";
+@import "./base/font-settings";
+@import "./layout/layout";
+
+* {
+    font-size: 1em;
+    margin: 0px;
+    font-weight: normal;
+}
+
+body {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    flex-wrap: wrap;
+}
+
+figure {
+    height: 350px;
+    width: 250px;
+}
+
+img {
+    object-fit: cover;
+    width: 100%;
+}

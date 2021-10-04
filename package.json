@@ -1,0 +1,19 @@
+{
+  "name": "orinoco",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "sass": "sass --watch ./frontend/assets/sass/main.scss:./frontend/assets/css/style.css"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Korgmgn/HamimiZouaoui_5_27092021.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Korgmgn/HamimiZouaoui_5_27092021/issues"
+  },
+  "homepage": "https://github.com/Korgmgn/HamimiZouaoui_5_27092021#readme"
+}

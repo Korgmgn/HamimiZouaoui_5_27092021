@@ -1,0 +1,224 @@
+.header {
+    &__current-location {
+        background-color: $drkbg-color;
+        box-shadow: inset 0px 3px 10px lightgrey;
+        &--text {
+            height: 50px;
+            display: inline-flex;
+            align-items: center;
+            font-weight: bold;
+        }
+        &--icon {
+            position: relative;
+            right: 15px;
+        }
+    }
+    &__intro {
+        background-color: $bg-color;
+        padding: 40px 0 50px 0;
+        &--text {
+            width: 90%;
+            @extend %flex-column;
+            margin: 0 auto 30px auto;
+            h2 {
+                font-size: 1.65em;
+                font-weight: bold;
+                margin-bottom: 10px;
+                padding: 0 30px 0 30px;
+            }
+            p {
+                color: grey;
+                font-size: 1.2em;
+            }
+        }
+    }
+}
+
+
+.nav {
+    width: 88%;
+    padding: 50px 0 50px 10px;
+    &__title {
+        display: inline-flex;
+        font-size: 1.5em;
+        font-weight: bold;
+        margin-bottom: 20px;
+    }
+}
+@include tablet-large {
+    .nav {
+        width: 95%;
+    }
+}
+@include monitor-large {
+    .nav {
+        margin: auto;
+        max-width: $responsive-max-width;
+    }
+}
+
+.guide {
+    @extend %flex-column;
+    justify-content: center;
+    &__step {
+        @include nav-card;
+        &--number {
+            min-height: 30px;
+            min-width: 30px;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            right: 15px;
+            z-index: 1;
+            color: white;
+            background-color: $color-primary;
+            border-radius: 50%;
+        }
+        i {
+            position: absolute;
+            left: 40px;
+            color: grey;
+            font-size: 1.25em;
+        }
+        &--text {
+            position: absolute;
+            left: 85px;
+            font-weight: bold;
+            margin-right: 15px;
+        }
+    }   
+    &__step-lightblue {
+        @include nav-card(#f5edff);
+        &--number {
+            min-height: 30px;
+            min-width: 30px;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            right: 15px;
+            z-index: 1;
+            color: white;
+            background-color: $color-primary;
+            border-radius: 50%;
+        }
+        i {
+            position: absolute;
+            left: 40px;
+            color: $color-primary;
+            font-size: 1.25em;
+        }
+        &--text {
+            position: absolute;
+            left: 85px;
+            font-weight: bold;
+            margin-right: 15px;
+        }
+    }
+    @include tablet-large {
+        &__step, &__step-lightblue {
+            width: 31%
+        }   
+    } 
+}
+@include tablet-large {
+    .guide {
+        flex-direction: row;
+        justify-content: space-between;
+    }
+}
+
+.section-index {
+    width: 100%;
+    background-color: $bg-color;
+    &__title {
+        align-self: flex-start;
+        font-size: 1.5em;
+        font-weight: bold;
+        margin: 50px auto 0 20px;
+    }
+    @include monitor-large {
+        &__title {
+            max-width: $responsive-max-width;
+            margin: 50px auto 0 auto
+        }       
+    }
+    &__restaurants {
+        max-width: $responsive-max-width;
+        @extend %flex-column;
+        align-items: center;
+        padding: 10px 20px 60px 20px;
+        margin: auto;
+        &--card {
+            @include restaurant-card;
+        }
+        @include tablet {
+            &--card {
+                width: 49%;
+            }
+        }
+        @include monitor {
+            &--card {
+                width: 24%;
+            }
+        }
+    }
+    @include tablet {
+        &__restaurants {
+            flex-direction: row;
+            flex-wrap: wrap;
+            justify-content: space-between;
+        }
+    }
+}
+
+.card-content {
+    position: relative;
+    &__img {
+        width: 100%;
+        height: 175px;
+        object-fit: cover;
+        border-radius: 15px 15px 0 0;
+    }
+    &__new {
+        position: absolute;
+        right: 12px;
+        top: 12px;
+        width: max-content;
+        font-size: 0.8em;
+        color: green;
+        background-color: $color-tertiary;
+        padding: 5px 10px;
+        border-radius: 3px;
+    }
+    &__bottom {
+        @extend %flex-row;
+        justify-content: space-between;
+        padding: 8px 12px 5px 12px;
+        &--text {
+            @extend %flex-column;
+            font-size: 1.15em;
+            line-height: 25px;
+            margin-right: auto;
+            h3 {
+                font-weight: bold;
+            }
+            p {
+                font-size: 0.95em;
+            }
+        }
+        &--heart-empty {
+            @include heart-empty(24px, 1.5em);
+            &:hover {
+                opacity: 0;
+            }
+            &:hover + .card-content__bottom--heart-filled {
+                transform: scale(1);
+            }           
+        }        
+        &--heart-filled {
+            @include heart-filled(1.5em)
+        }
+    }
+}
