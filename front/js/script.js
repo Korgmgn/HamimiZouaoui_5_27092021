@@ -1,4 +1,4 @@
-document.addEventListener('DOMContentLoaded', function getItems() {
+document.addEventListener('DOMContentLoaded', function() {
     fetch('http://localhost:3000/api/products')
     .then(function(res) {
             if (res.ok) {
