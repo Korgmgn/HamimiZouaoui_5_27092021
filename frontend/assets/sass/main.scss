@@ -2,19 +2,12 @@
 @import "./utils/mixins";
 @import "./utils/%placeholders";
 @import "./base/font-settings";
-@import "./layout/layout";
+@import "./pages/index.scss";
 
 * {
     font-size: 1em;
-    margin: 0px;
+    margin: 0;
     font-weight: normal;
-}
-
-body {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-around;
-    flex-wrap: wrap;
 }
 
 figure {
