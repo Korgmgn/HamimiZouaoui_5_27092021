@@ -67,7 +67,7 @@ document.addEventListener('DOMContentLoaded', function() {
             console.log(e.target.value)
         })
 
-        //fonction pour ajouter le produit objet{id, quantité, couleur} dans l'array du panier 
+        //fonction pour ajouter l'objet produit{id, quantité, couleur} dans l'array du panier et empêcher les doublons id + couleur
         let cart = []
         const itemToCart = document.getElementById('addToCart')
 
@@ -90,12 +90,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
             cart.push(addedItem)/* quantity est une string, pourquoi? */
             console.log(cart)
-        })
-        
-        // Utiliser e.target.value pour récupérer la bonne couleur dans l'array panier ?
-        //fonction  - Lier au bouton ajouter au panier?
-        //fonction pour l'ajout au panier - Créer un array cart = [] en utilisant .push pour y ajouter id, quantité, couleur.
-        // localStorage sur ce script ou le suivant?
+        })        
     })
     .catch(function(error) {
         console.log('ERROR')
