@@ -25,40 +25,75 @@ document.addEventListener('DOMContentLoaded', function() {
             }
     })
     .then(function(data) {
-        console.log(data.name)
-
+        console.log(data)
+        // fonction pour récupérer et afficher les données du produit
         let imgDiv = document.getElementsByClassName('item__img')
+        imgDiv = imgDiv[0] /* ajouter une div */
 
-        let itemImg = document.createElement('img')
-        imgDiv.appendChild(itemImg)
+        const itemImg = document.createElement('img')
         itemImg.setAttribute('src', data.imageUrl)
+        imgDiv.appendChild(itemImg)
 
-        let itemName = document.getElementById('title')
+        const itemName = document.getElementById('title')
         itemName.textContent = data.name
 
-        let itemPrice = document.getElementById('price')
+        const itemPrice = document.getElementById('price')
         itemPrice.innerText = data.price
 
-        let itemText = document.getElementById('description')
+        const itemText = document.getElementById('description')
         itemText.innerText = data.description
 
-/*         let colorSelect = document.getElementById('colors') 
+        // fonction pour récupérer et afficher les couleurs disponibles dans le menu déroulant
+        const colorSelect = document.getElementById('colors') 
 
         for(let i = 0; i < data.colors.length; i++) {
-            let couchColor = data.colors[i]
+            const couchColor = data.colors[i]
 
-            let colorOption = createElement('option')
-            colorSelect.appendChild('colorOption')
-            colorOption.setAttribute('value', couchColor) 
-            
+            const colorOption = document.createElement('option')
+            colorOption.setAttribute('value', couchColor)
+            colorOption.innerText = couchColor
+            colorSelect.appendChild(colorOption)      
         }
 
-        colorSelect.addEventListener('change', function(e) {
-            // Utiliser e.target.value pour récupérer la bonne couleur dans l'array panier ?
-        })  */
+        //Ecoute la couleur - A supprimer
+        colorSelect.addEventListener('change', function(e){
+            console.log(e.target.value)
+        })
 
+        //Ecoute la quantité - A intégrer dans l'eventlistener click du panier OU tel que, ajouter break après condition pour empêcher l'ajout au panier?
+        const itemQty = document.getElementById('quantity')
+        
+        itemQty.addEventListener('change', function(e) {
+            console.log(e.target.value)
+        })
 
-        //fonction addEventListener avec (input > 0 && input <= 100) pour la quantité - Lier au bouton ajouter au panier?
+        //fonction pour ajouter le produit objet{id, quantité, couleur} dans l'array du panier 
+        let cart = []
+        const itemToCart = document.getElementById('addToCart')
+
+        itemToCart.addEventListener('click', function(e){
+            /*
+            Pour chaque index dans l'array
+                Si array contient id && couleur identiques
+                Alors input.value + object.quantity
+                Sinon array.push(object)
+
+            for(let i = 0; i < cart.length; i++){
+                if(){}
+            }
+            */
+            
+            let addedItem = {
+                id: data._id,
+                color: colorSelect.value,
+                quantity: itemQty.value
+            }
+            cart.push(addedItem)/* quantity est une string, pourquoi? */
+            console.log(cart)
+        })
+        
+        // Utiliser e.target.value pour récupérer la bonne couleur dans l'array panier ?
+        //fonction  - Lier au bouton ajouter au panier?
         //fonction pour l'ajout au panier - Créer un array cart = [] en utilisant .push pour y ajouter id, quantité, couleur.
         // localStorage sur ce script ou le suivant?
     })

@@ -24,26 +24,26 @@ function fetchResult(data) {
         const couch = data[i]
 
         const itemLink = document.createElement('a')
-        listContainer.appendChild(itemLink)
         itemLink.setAttribute('href', `./product.html?id=${couch._id}`)
+        listContainer.appendChild(itemLink)
 
         const itemCard = document.createElement('article')
         itemLink.appendChild(itemCard)
 
         const itemImg = document.createElement('img')
-        itemCard.appendChild(itemImg)
         itemImg.setAttribute('src', couch.imageUrl) /* deuxième setAttribute pour ajouter alt en plus de src ? */
         itemImg.setAttribute('alt', couch.altTxt)
+        itemCard.appendChild(itemImg)
 
         const itemName = document.createElement('h2')
-        itemCard.appendChild(itemName)
         itemName.classList.add('productName')
         itemName.innerText = couch.name
+        itemCard.appendChild(itemName)
         
         const itemText = document.createElement('p')
-        itemCard.appendChild(itemText)
         itemText.classList.add('productDescription')
         itemText.innerText = couch.description
+        itemCard.appendChild(itemText)
     } 
 }
  
