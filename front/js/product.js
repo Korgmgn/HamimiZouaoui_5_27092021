@@ -90,6 +90,8 @@ document.addEventListener('DOMContentLoaded', function() {
             }
             cart.push(addedItem)/* quantity est une string, pourquoi? */
             console.log(cart)
+
+            localStorage.setItem("itemsInCart", JSON.parse(cart))
         })        
     })
     .catch(function(error) {
