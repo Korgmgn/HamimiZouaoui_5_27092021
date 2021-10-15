@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
     })
     .then(function(data) {
-        fetchResult(data)           
+        usefetchResult(data)           
     })
     .catch(function(error) {
         console.log('ERROR')
@@ -15,7 +15,7 @@ document.addEventListener('DOMContentLoaded', function() {
 })
 
 
-function fetchResult(data) {
+function usefetchResult(data) {
     console.log(data)
 
     const listContainer = document.getElementById('items')

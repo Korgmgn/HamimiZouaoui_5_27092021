@@ -27,11 +27,31 @@ document.addEventListener('DOMContentLoaded', function() {
     .then(function(data) {
         console.log(data)
         // fonction pour récupérer et afficher les données du produit
-        let imgDiv = document.getElementsByClassName('item__img')
+        displayItemData(data)
+
+        // fonction pour récupérer et afficher les couleurs disponibles dans le menu déroulant
+        displayItemColors(data)
+        //Ecoute la couleur et la quantité
+        printInput(data)
+
+        //fonction pour ajouter l'objet produit{id, quantité, couleur} dans l'array du panier et empêcher les doublons id + couleur
+        pushItemToCart(data)
+        //setLocalStorage(data)
+        
+    })
+    .catch(function(error) {
+        console.log('ERROR')
+    })
+})
+
+
+function displayItemData(data){
+    let imgDiv = document.getElementsByClassName('item__img')
         imgDiv = imgDiv[0] /* ajouter une div */
 
         const itemImg = document.createElement('img')
         itemImg.setAttribute('src', data.imageUrl)
+        itemImg.setAttribute('alt', data.altTxt)
         imgDiv.appendChild(itemImg)
 
         const itemName = document.getElementById('title')
@@ -42,59 +62,55 @@ document.addEventListener('DOMContentLoaded', function() {
 
         const itemText = document.getElementById('description')
         itemText.innerText = data.description
+}
 
-        // fonction pour récupérer et afficher les couleurs disponibles dans le menu déroulant
-        const colorSelect = document.getElementById('colors') 
+//constantes utilisées dans les functions suivantes
+const colorSelect = document.getElementById('colors') 
+const itemQty = document.getElementById('quantity')
 
-        for(let i = 0; i < data.colors.length; i++) {
-            const couchColor = data.colors[i]
 
-            const colorOption = document.createElement('option')
-            colorOption.setAttribute('value', couchColor)
-            colorOption.innerText = couchColor
-            colorSelect.appendChild(colorOption)      
+function displayItemColors(data){
+    for(let i = 0; i < data.colors.length; i++) {
+        const couchColor = data.colors[i]
+
+        const colorOption = document.createElement('option')
+        colorOption.setAttribute('value', couchColor)
+        colorOption.innerText = couchColor
+        colorSelect.appendChild(colorOption)      
+    }
+}
+
+function printInput(data){
+    colorSelect.addEventListener('change', function(e){
+        console.log(e.target.value)
+    })
+    
+    itemQty.addEventListener('change', function(e) {
+        console.log(e.target.value)
+    })
+}
+
+function pushItemToCart(data){
+    let cart = []
+    const itemToCart = document.getElementById('addToCart')
+
+    itemToCart.addEventListener('click', function(e){
+        /*
+            Condition pour controler la quantité et condition pour update ou créer le lS
+        */
+        //séparer en eux fonctions?
+        let addedItem = {
+            id: data._id,
+            name: data.name,
+            price: data.price,
+            img: data.imageUrl,
+            altTxt: data.altTxt,
+            color: colorSelect.value,
+            quantity: itemQty.value
         }
+        cart.push(addedItem)
+        console.log(cart)
+        localStorage.setItem("itemsInCart", JSON.stringify(cart)) //ajouter plusieurs fois le même canapé créé des objets supplémentaires dans le LS, mais ajouter un autre modèle écrase le LS en cours
+    })        
+}
 
-        //Ecoute la couleur - A supprimer
-        colorSelect.addEventListener('change', function(e){
-            console.log(e.target.value)
-        })
-
-        //Ecoute la quantité - A intégrer dans l'eventlistener click du panier OU tel que, ajouter break après condition pour empêcher l'ajout au panier?
-        const itemQty = document.getElementById('quantity')
-        
-        itemQty.addEventListener('change', function(e) {
-            console.log(e.target.value)
-        })
-
-        //fonction pour ajouter l'objet produit{id, quantité, couleur} dans l'array du panier et empêcher les doublons id + couleur
-        let cart = []
-        const itemToCart = document.getElementById('addToCart')
-
-        itemToCart.addEventListener('click', function(e){
-            /*
-            Pour chaque index dans l'array
-                Si array contient id && couleur identiques
-                Alors input.value + object.quantity
-                Sinon array.push(object)
-
-            for(let i = 0; i < cart.length; i++){
-                if(){}
-            }
-            */
-            
-            let addedItem = {
-                id: data._id,
-                color: colorSelect.value,
-                quantity: itemQty.value
-            }
-            cart.push(addedItem)/* quantity est une string, pourquoi? */
-            console.log(cart)
-
-            localStorage.setItem("itemsInCart", JSON.parse(cart))
-        })        
-    })
-    .catch(function(error) {
-        console.log('ERROR')
-    })
-})
