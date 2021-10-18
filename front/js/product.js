@@ -31,20 +31,17 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // fonction pour récupérer et afficher les couleurs disponibles dans le menu déroulant
         displayItemColors(data)
-        //Ecoute la couleur et la quantité
-        printInput(data)
 
-        //fonction pour ajouter l'objet produit{id, quantité, couleur} dans l'array du panier et empêcher les doublons id + couleur
-        pushItemToCart(data)
-        //setLocalStorage(data)
-        
+        verifyColor()
+        verifyQuantity()
+        addToCartClick()        
     })
     .catch(function(error) {
         console.log('ERROR')
     })
 })
 
-
+//Créé est rempli le DOM dynamiquement
 function displayItemData(data){
     let imgDiv = document.getElementsByClassName('item__img')
         imgDiv = imgDiv[0] /* ajouter une div */
@@ -68,7 +65,7 @@ function displayItemData(data){
 const colorSelect = document.getElementById('colors') 
 const itemQty = document.getElementById('quantity')
 
-
+//Créé et rempli le DOM dynamiquement
 function displayItemColors(data){
     for(let i = 0; i < data.colors.length; i++) {
         const couchColor = data.colors[i]
@@ -80,37 +77,107 @@ function displayItemColors(data){
     }
 }
 
-function printInput(data){
+//verifie si input couleur est valide
+function verifyColor(){
     colorSelect.addEventListener('change', function(e){
         console.log(e.target.value)
+        if(e.target.value !== ""){
+            console.log('couleur selectionnée valide')
+            return true
+        } else {
+            alert("Aucune couleur selectionnée")
+            return false
+        }
     })
-    
+}
+
+//verifie si input quantité est valide
+function verifyQuantity(){
     itemQty.addEventListener('change', function(e) {
         console.log(e.target.value)
+        if(e.target.value > 0 && e.target.value <= 100){
+            console.log('quantité valide')
+            return true
+        } else {
+            alert('La quantité doit être comprise entre 1 et 100')
+            return false
+        }
     })
 }
 
-function pushItemToCart(data){
-    let cart = []
+//Déclenché au clic du bouton, vérifie d'abord que couleur & quantité sont valides
+function addToCartClick(){
     const itemToCart = document.getElementById('addToCart')
+    const cartExists = localStorage.getItem("itemsInCart")
 
     itemToCart.addEventListener('click', function(e){
-        /*
-            Condition pour controler la quantité et condition pour update ou créer le lS
-        */
-        //séparer en eux fonctions?
-        let addedItem = {
-            id: data._id,
-            name: data.name,
-            price: data.price,
-            img: data.imageUrl,
-            altTxt: data.altTxt,
-            color: colorSelect.value,
-            quantity: itemQty.value
+        if(verifyColor === true && verifyQuantity === true){
+            console.log('tous les inputs sont valides')
+            checkForCart(cartExists)
+        } else {
+            console.log('un des inputs n\'est invalide') //Même lorsque le console.log de verifyQuantity & verifyColor indiquent des valeures valides, cette fonction se termine ici 
         }
-        cart.push(addedItem)
-        console.log(cart)
-        localStorage.setItem("itemsInCart", JSON.stringify(cart)) //ajouter plusieurs fois le même canapé créé des objets supplémentaires dans le LS, mais ajouter un autre modèle écrase le LS en cours
-    })        
+    })
 }
 
+//Verifie si le localStorage existe
+function checkForCart(cartExists){
+    const parseCart = JSON.parse(cartExists)
+
+    if(cartExists !== null){
+        console.log('Le panier existe déjà')
+        searchCartForId(data, parseCart)
+    } else {
+        console.log('Le panier n\'existe pas')
+        pushItemToCart()
+    }
+}
+
+//Si le localStorage existe, vérifie si un produit avec le même Id && couleur existe
+function searchCartForId(data, parseCart){
+    for(let i = 0; i < parseCart.length; i++) {
+        const itemInCart = parseCart[i]
+        if(data._id == itemInCart.id && colorSelect.value == itemInCart.color){
+            itemInCart.quantity = itemInCart.quantity + itemQty.value //additionne les strings et non les nombres /!\
+            console.log('Cet objet existe déjà dans le panier')
+        } else {
+            console.log('Cet objet est n\'existe pas encore dans le panier')
+            pushItemToCart()
+        }
+    }
+}
+
+//Si le localStorage n'existe pas, l'objet produit et le localStorage sont créés
+function pushItemToCart(){
+
+    let cart = []
+    let addedItem = {
+        id: data._id,
+        name: data.name,
+        price: data.price,
+        img: data.imageUrl,
+        altTxt: data.altTxt,
+        color: colorSelect.value,
+        quantity: itemQty.value
+    }
+
+    cart.push(addedItem)
+    console.log(cart)
+    localStorage.setItem("itemsInCart", JSON.stringify(cart)) //ajouter plusieurs fois le même canapé créé des objets supplémentaires dans le LS, mais ajouter un autre modèle écrase le LS en cours    
+}
+
+
+
+
+
+/*
+
+Mémo
+Dans l'ordre:
+1-Verifier si l'input couleur est valide
+2-Verifier si l'input quantité est valide
+3-Au clic du bouton, si 1 & 2 sont vrais, vérifier si localStorage existe
+4-Si localStorage existe, ajouter l'input quantité au même ID
+5-Sinon, créer le nouvel objet et .push dans l'array cart
+6-mettre l'array cart dans le localstorage
+*/
