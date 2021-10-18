@@ -1,18 +1,3 @@
-// Liste des id & classe de balises à compléter dynamiquement
-
-/* 
-div class="item__img" = createElement <img src= image du produit alt= alttxt du produit>
-h1 id="title" = innerText nom du produit
-span id="price" = innerText prix du produit
-p id=description = innerText description du produit
-
-addEventListener
-balise option = change, loop color array, target.value
-input id=quantity = change or input (input > 0 && input < 100)
-button id=addToCart = input (voir localStorage)
-*/
-
-
 let urlParam = new URL(document.location)
 let itemId = urlParam.searchParams.get('id')
 
@@ -44,7 +29,7 @@ document.addEventListener('DOMContentLoaded', function() {
 //Créé est rempli le DOM dynamiquement
 function displayItemData(data){
     let imgDiv = document.getElementsByClassName('item__img')
-        imgDiv = imgDiv[0] /* ajouter une div */
+        imgDiv = imgDiv[0]
 
         const itemImg = document.createElement('img')
         itemImg.setAttribute('src', data.imageUrl)
@@ -82,7 +67,7 @@ function verifyColor(){
     colorSelect.addEventListener('change', function(e){
         console.log(e.target.value)
         if(e.target.value !== ""){
-            console.log('couleur selectionnée valide')
+            console.log('couleur valide')
             return true
         } else {
             alert("Aucune couleur selectionnée")
@@ -111,11 +96,11 @@ function addToCartClick(){
     const cartExists = localStorage.getItem("itemsInCart")
 
     itemToCart.addEventListener('click', function(e){
-        if(verifyColor === true && verifyQuantity === true){
-            console.log('tous les inputs sont valides')
+        if(verifyColor == true && verifyQuantity == true){
+            console.log('Tous les inputs sont valides')
             checkForCart(cartExists)
         } else {
-            console.log('un des inputs n\'est invalide') //Même lorsque le console.log de verifyQuantity & verifyColor indiquent des valeures valides, cette fonction se termine ici 
+            console.log('Au moins un des inputs n\'est pas valide') //Même lorsque le console.log de verifyQuantity & verifyColor indiquent des valeures valides, cette fonction se termine ici 
         }
     })
 }
@@ -129,7 +114,7 @@ function checkForCart(cartExists){
         searchCartForId(data, parseCart)
     } else {
         console.log('Le panier n\'existe pas')
-        pushItemToCart()
+        pushItemToCart(data)
     }
 }
 
@@ -142,13 +127,13 @@ function searchCartForId(data, parseCart){
             console.log('Cet objet existe déjà dans le panier')
         } else {
             console.log('Cet objet est n\'existe pas encore dans le panier')
-            pushItemToCart()
+            pushItemToCart(data)
         }
     }
 }
 
 //Si le localStorage n'existe pas, l'objet produit et le localStorage sont créés
-function pushItemToCart(){
+function pushItemToCart(data){
 
     let cart = []
     let addedItem = {
@@ -163,7 +148,7 @@ function pushItemToCart(){
 
     cart.push(addedItem)
     console.log(cart)
-    localStorage.setItem("itemsInCart", JSON.stringify(cart)) //ajouter plusieurs fois le même canapé créé des objets supplémentaires dans le LS, mais ajouter un autre modèle écrase le LS en cours    
+    localStorage.setItem("itemsInCart", JSON.stringify(cart))
 }
 
 
