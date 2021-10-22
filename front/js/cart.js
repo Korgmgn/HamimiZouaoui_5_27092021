@@ -6,9 +6,11 @@ main()
 
 function main(){
     displayCartItems(lsParse)
+    getQuantityPrice(lsParse)
+    modifyQuantity(lsParse)
 }
 
-//Affiche les éléments du panier et leurs données
+//Récupère les éléments depuis le localStorage et affiche leurs données
 function displayCartItems(lsParse){
     
     const cartContent = document.getElementById('cart__items')
@@ -43,7 +45,7 @@ function displayCartItems(lsParse){
         textContainer.appendChild(itemName)
 
         const itemPrice = document.createElement('p')
-        itemPrice.innerText = `${itemInCart.price}` * `${itemInCart.quantity}` + "€"
+        itemPrice.innerText = `${itemInCart.price}` * `${itemInCart.quantity}` + " €"
         textContainer.appendChild(itemPrice)
 
         const settingsContainer = document.createElement('div')
@@ -53,6 +55,10 @@ function displayCartItems(lsParse){
         const quantityContainer = document.createElement('div')
         quantityContainer.classList.add('cart__item__content__settings__quantity')
         settingsContainer.appendChild(quantityContainer)
+
+        const colorTag = document.createElement('p')
+        colorTag.innerText = `${itemInCart.color}`
+        quantityContainer.appendChild(colorTag)
 
         const qtyTag = document.createElement('p')
         qtyTag.innerText = "Qté : "
@@ -74,9 +80,70 @@ function displayCartItems(lsParse){
         const deleteButton = document.createElement('p')
         deleteButton.classList.add('deleteItem')
         deleteButton.innerText = "Supprimer"
-        deleteContainer.appendChild(deleteButton)
-
-        //              <p>Total (<span id="totalQuantity"><!-- 2 --></span> articles) : <span id="totalPrice"><!-- 84,00 --></span> €</p>
-        
+        deleteContainer.appendChild(deleteButton)        
     }
 }
+
+/*Récupère les quantités et les prix depuis le localStorage dans deux arrays séparés, 
+puis calcul le total et l'affiche dans le dom*/
+function getQuantityPrice(lsParse){
+    const quantityArray = []
+    const priceArray = []
+
+    for(let i = 0; i < lsParse.length; i++) {
+        const itemInCart = lsParse[i]
+
+        quantityArray.push(itemInCart.quantity)
+        priceArray.push(itemInCart.quantity * itemInCart.price)
+    }
+    console.log(quantityArray, priceArray)
+    
+    const totalQuantity = quantityArray.reduce((total, item) => {
+        return total + item
+    }, 0)
+
+    console.log('Quantité totale: ' + totalQuantity)
+
+    const totalPrice = priceArray.reduce((total, item) => {
+        return total + item
+    }, 0)
+
+    console.log('Prix total: ' + totalPrice + ' €')
+
+    const quantityDisplay = document.getElementById('totalQuantity')
+    const priceDisplay = document.getElementById('totalPrice')
+
+    quantityDisplay.innerText = totalQuantity
+    priceDisplay.innerText = totalPrice
+}
+
+//fonction pour écouter les changement de quantité et supprimer un élement(element.closest)
+/* function modifyQuantity(lsParse){
+    const itemQuantity = document.getElementsByClassName('itemQuantity')
+
+    console.log(itemQuantity)
+    //let newItemQuantity;
+    for(let i = 0; i < itemQuantity.length; i++) {
+        const item = itemQuantity[i]
+
+        item.addEventListener('change', function(e){
+            //newItemQuantity = e.target.value
+            lsParse.quantity = e.target.value
+            console.log(lsParse.quantity, lsParse)
+        })
+    }
+}
+
+function deleteItem(lsParse){
+    const deleteContainer = document.getElementsByClassName('deleteItem')
+
+    for(let i = 0; i < deleteContainer.length; i++) {
+        const item = deleteContainer[i]
+        const itemContainer = item.closest("article > div")
+        itemContainer.dataset.id ===
+
+        item.addEventListener('click', function(e) {
+
+        })
+    }
+} */

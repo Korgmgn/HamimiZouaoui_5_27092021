@@ -114,14 +114,15 @@ function addToCartClick(data){
 function checkForCart(data){
     const cartExists = localStorage.getItem("itemsInCart")
 
+    //Constante pour la création d'objet à mettre dans l'array cart
     let addedItem = {
         id: data._id,
         name: data.name,
-        price: data.price,
+        price: Number(data.price),
         img: data.imageUrl,
         altTxt: data.altTxt,
         color: colorSelect.value,
-        quantity: itemQty.value
+        quantity: Number(itemQty.value)
     }    
 
     if(cartExists != null){
@@ -135,30 +136,28 @@ function checkForCart(data){
 
 //Si le localStorage existe, vérifie si un produit avec le même Id && couleur existe
 function searchCartForId(data, cartExists, addedItem){
-    const parseCart = JSON.parse(cartExists)
-    let existingCart = parseCart
-    console.log(existingCart)
+    const parsedCart = JSON.parse(cartExists)
+    console.log(parsedCart)
 
-    for(let i = 0; i < existingCart.length; i++) {
-        const itemInCart = existingCart[i]
+    for(let i = 0; i < parsedCart.length; i++) {
+        const itemInCart = parsedCart[i]
         if(data._id == itemInCart.id && colorSelect.value == itemInCart.color){
             let newQuantityIncart  = Number(itemInCart.quantity) + Number(itemQty.value) 
             itemInCart.quantity = newQuantityIncart
-            localStorage.setItem("itemsInCart", JSON.stringify(existingCart))
+            localStorage.setItem("itemsInCart", JSON.stringify(parsedCart))
             console.log('Cet objet existe déjà dans le panier, la quantité a été mise à jour')
         } else {
             console.log('Cet objet n\'existe pas encore dans le panier')
-            updateLocalStorage(existingCart, addedItem)        
+            updateLocalStorage(parsedCart, addedItem)        
         }
     }
 }
 
-//Constante pour la création d'objet à mettre dans l'array cart
 
 //Mets à jour le localStorage existant avec un nouvel objet
-function updateLocalStorage(existingCart, addedItem){
-    existingCart.push(addedItem)
-    localStorage.setItem("itemsInCart", JSON.stringify(existingCart))
+function updateLocalStorage(parsedCart, addedItem){
+    parsedCart.push(addedItem)
+    localStorage.setItem("itemsInCart", JSON.stringify(parsedCart))
     console.log('Nouvel objet ajouté au panier existant')
 }
 
