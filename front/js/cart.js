@@ -7,7 +7,7 @@ main()
 function main(){
     displayCartItems(lsParse)
     getQuantityPrice(lsParse)
-    modifyQuantity(lsParse)
+    //modifyQuantity(lsParse)
 }
 
 //Récupère les éléments depuis le localStorage et affiche leurs données
@@ -87,8 +87,8 @@ function displayCartItems(lsParse){
 /*Récupère les quantités et les prix depuis le localStorage dans deux arrays séparés, 
 puis calcul le total et l'affiche dans le dom*/
 function getQuantityPrice(lsParse){
-    const quantityArray = []
-    const priceArray = []
+    const quantityArray = [] // inutile, rempalcer par lsParse
+    const priceArray = [] // inutile, rempalcer par lsParse
 
     for(let i = 0; i < lsParse.length; i++) {
         const itemInCart = lsParse[i]
@@ -118,6 +118,7 @@ function getQuantityPrice(lsParse){
 }
 
 //fonction pour écouter les changement de quantité et supprimer un élement(element.closest)
+
 /* function modifyQuantity(lsParse){
     const itemQuantity = document.getElementsByClassName('itemQuantity')
 
@@ -147,3 +148,5 @@ function deleteItem(lsParse){
         })
     }
 } */
+
+//essayer .find et .indexOf, .closest ou dataset
