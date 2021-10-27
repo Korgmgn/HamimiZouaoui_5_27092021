@@ -7,7 +7,7 @@ main()
 function main(){
     displayCartItems(lsParse)
     getQuantityPrice(lsParse)
-    //modifyQuantity(lsParse)
+    modifyQuantity(lsParse)
 }
 
 //Récupère les éléments depuis le localStorage et affiche leurs données
@@ -45,7 +45,7 @@ function displayCartItems(lsParse){
         textContainer.appendChild(itemName)
 
         const itemPrice = document.createElement('p')
-        itemPrice.innerText = `${itemInCart.price}` * `${itemInCart.quantity}` + " €"
+        itemPrice.innerText = itemInCart.price + " €"
         textContainer.appendChild(itemPrice)
 
         const settingsContainer = document.createElement('div')
@@ -87,25 +87,15 @@ function displayCartItems(lsParse){
 /*Récupère les quantités et les prix depuis le localStorage dans deux arrays séparés, 
 puis calcul le total et l'affiche dans le dom*/
 function getQuantityPrice(lsParse){
-    const quantityArray = [] // inutile, rempalcer par lsParse
-    const priceArray = [] // inutile, rempalcer par lsParse
-
-    for(let i = 0; i < lsParse.length; i++) {
-        const itemInCart = lsParse[i]
-
-        quantityArray.push(itemInCart.quantity)
-        priceArray.push(itemInCart.quantity * itemInCart.price)
-    }
-    console.log(quantityArray, priceArray)
-    
-    const totalQuantity = quantityArray.reduce((total, item) => {
-        return total + item
+        
+    const totalQuantity = lsParse.reduce((total, item) => {
+        return total + item.quantity
     }, 0)
 
     console.log('Quantité totale: ' + totalQuantity)
 
-    const totalPrice = priceArray.reduce((total, item) => {
-        return total + item
+    const totalPrice = lsParse.reduce((total, item) => {
+        return total + item.price * item.quantity
     }, 0)
 
     console.log('Prix total: ' + totalPrice + ' €')
@@ -117,24 +107,31 @@ function getQuantityPrice(lsParse){
     priceDisplay.innerText = totalPrice
 }
 
-//fonction pour écouter les changement de quantité et supprimer un élement(element.closest)
+//fonction pour écouter les changement de quantité et mettre à jour le localStorage
 
-/* function modifyQuantity(lsParse){
+function modifyQuantity(lsParse){
     const itemQuantity = document.getElementsByClassName('itemQuantity')
 
     console.log(itemQuantity)
-    //let newItemQuantity;
     for(let i = 0; i < itemQuantity.length; i++) {
         const item = itemQuantity[i]
 
+        const itemContainerId = item.closest('article').getAttribute('data-id')
+        const foundItem = lsParse.find(item => itemContainerId == item.id && item == lsParse[i])
+
         item.addEventListener('change', function(e){
-            //newItemQuantity = e.target.value
-            lsParse.quantity = e.target.value
-            console.log(lsParse.quantity, lsParse)
+            const index = lsParse.indexOf(foundItem)
+            console.log(item.value, itemContainerId, index)
+            if(foundItem){
+                lsParse[index].quantity = Number(e.target.value)
+                localStorage.setItem("itemsInCart", JSON.stringify(lsParse))
+                console.log(lsParse[index])
+            }            
         })
     }
 }
 
+/* 
 function deleteItem(lsParse){
     const deleteContainer = document.getElementsByClassName('deleteItem')
 
@@ -147,6 +144,6 @@ function deleteItem(lsParse){
 
         })
     }
-} */
-
+}
+ */
 //essayer .find et .indexOf, .closest ou dataset
