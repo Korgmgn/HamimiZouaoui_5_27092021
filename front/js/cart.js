@@ -8,6 +8,7 @@ function main(){
     displayCartItems(lsParse)
     getQuantityPrice(lsParse)
     modifyQuantity(lsParse)
+    deleteItem(lsParse)
 }
 
 //Récupère les éléments depuis le localStorage et affiche leurs données
@@ -107,7 +108,7 @@ function getQuantityPrice(lsParse){
     priceDisplay.innerText = totalPrice
 }
 
-//fonction pour écouter les changement de quantité et mettre à jour le localStorage
+//Ecoute les changement de quantité et mettre à jour le localStorage
 
 function modifyQuantity(lsParse){
     const itemQuantity = document.getElementsByClassName('itemQuantity')
@@ -131,19 +132,29 @@ function modifyQuantity(lsParse){
     }
 }
 
-/* 
+
+//Ecoute le clic sur le bouton "Supprimer", retire le html correspondant et enlève l'objet dans le localStorage
 function deleteItem(lsParse){
     const deleteContainer = document.getElementsByClassName('deleteItem')
-
+    
     for(let i = 0; i < deleteContainer.length; i++) {
         const item = deleteContainer[i]
-        const itemContainer = item.closest("article > div")
-        itemContainer.dataset.id ===
+
+        const itemContainer = item.closest('article')
+        const itemContainerId = itemContainer.getAttribute('data-id')
+        const foundItem = lsParse.find(item => itemContainerId == item.id && item == lsParse[i])
 
         item.addEventListener('click', function(e) {
+            const index = lsParse.indexOf(foundItem)
 
+            if(foundItem){
+                itemContainer.remove()
+                lsParse.splice(index, 1)
+                localStorage.setItem("itemsInCart", JSON.stringify(lsParse))
+                console.log(lsParse)
+            }
         })
     }
 }
- */
+
 //essayer .find et .indexOf, .closest ou dataset
