@@ -111,6 +111,7 @@ function addToCartClick(){
 function checkForCart(){
     const cartExists = localStorage.getItem("itemsInCart")
     
+    
     //Constante pour la création d'objet à mettre dans l'array cart
     let addedItem = { //a récupérer depuis le dom ou urlparams
         id: itemId, 

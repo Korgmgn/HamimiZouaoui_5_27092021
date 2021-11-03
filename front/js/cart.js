@@ -9,7 +9,7 @@ function main(){
     getQuantityPrice(lsParsed)
     modifyQuantity(lsParsed)// mettre dans displayCartItems
     deleteItem(lsParsed)// mettre dans displayCartItems
-    formValidation()
+    formValidation(lsParsed)
 }
 
 //Récupère les éléments depuis le localStorage et affiche leurs données
@@ -126,7 +126,8 @@ function modifyQuantity(lsParsed){
             console.log(item.value, itemContainerId, index)
             if(foundItem){
                 lsParsed[index].quantity = Number(e.target.value)
-                localStorage.setItem("itemsInCart", JSON.stringify(lsParsed)) // ajouter fonction du calcul total
+                localStorage.setItem("itemsInCart", JSON.stringify(lsParsed))
+                getQuantityPrice(lsParsed)
                 console.log(lsParsed[index])
             }            
         })
@@ -159,7 +160,7 @@ function deleteItem(lsParsed){
 }
 
 
-function formValidation() {
+function formValidation(lsParsed) {
 
     const form = document.getElementsByClassName('cart__order__form')[0]
     const firstName = document.getElementById('firstName')
@@ -171,22 +172,27 @@ function formValidation() {
     form.addEventListener('submit', function(e) {
         e.preventDefault()
         	
-        let contactInfo // objet contact
+        let contact // objet contact
         let order // array avec objet contact + id retourné par l'api ?
+
+        let products = lsParsed.map((item) => {
+            return item.id
+        })
 
         if(checkInputs()) {
             console.log('Commande envoyée')
             
-            /* contactInfo = {
-                firstName = firstName.value,
-                lastName = lastName.value,
-                address = address.value,
-                city = city.value,
-                email = email.value
+            contact = {
+                firstName: firstName.value,
+                lastName: lastName.value,
+                address: address.value,
+                city: city.value,
+                email: email.value
             }
 
-            order = [contactInfo, lsParsed.id]
-            postOrder() */
+            order = {contact, products}
+            console.log(order)
+            postOrder(order)
             
 
             //fonction supprime l'ancien LS
@@ -225,10 +231,11 @@ function checkFirstName(firstNameValue){
 
     if(firstNameValue == '') {
         firstNameMsg.innerText = 'Ce champ est requis !'
-    } else if (nameCityRegex(firstNameValue)) {
+    } else if (!nameCityRegex(firstNameValue)) {
         firstNameMsg.innerText = 'Des caractères sont invalides !'
     } else {
         firstNameMsg.innerText = 'Champ valide'
+        return true
     }
 }
 
@@ -237,10 +244,11 @@ function checkLastName(lastNameValue){
 
     if(lastNameValue == '') {
         lastNameMsg.innerText = 'Ce champ est requis !'
-    } else if (nameCityRegex(lastNameValue)) {
+    } else if (!nameCityRegex(lastNameValue)) {
         lastNameMsg.innerText = 'Des caractères sont invalides !'
     } else {
         lastNameMsg.innerText = 'Champ valide'
+        return true
     }
 }
 
@@ -253,6 +261,7 @@ function checkAddress(addressValue){
         addressMsg.innerText = 'Des caractères sont invalides !'
     } else {
         addressMsg.innerText = 'Champ valide'
+        return true
     }
 }
 
@@ -261,10 +270,11 @@ function checkCity(cityValue){
 
     if(cityValue == ''){
         cityMsg.innerText = 'Ce champ est requis !'
-    } else if (nameCityRegex(cityValue)) {
+    } else if (!nameCityRegex(cityValue)) {
         cityMsg.innerText = 'Des caractères sont invalides !'
     } else {
         cityMsg.innerText = 'Champ valide'
+        return true
     }
 }
 
@@ -273,29 +283,29 @@ function checkEmail(emailValue){
 
     if(emailValue == '') {
         emailMsg.innerText = 'Ce champ est requis !'
-    /* } else if (emailRegex(emailValue)) {
+     } else if (!emailRegex(emailValue)) {
             emailMsg.innerText = 'Des caractères sont invalides !'
-            return false */
     } else {
         emailMsg.innerText = 'Champ valide'
+        return true
     }
 }
 
 
 function nameCityRegex(nameCityValue){
-    return /(([A-Za-z]+)[\s\.\',-]([A-Za-z]+)?)$/.test(nameCityValue)
+    return /^[A-Z-a-z\s]{3,40}$/.test(nameCityValue)
 }
 
 function addressRegex(addressValue){
-    return /([0-9]*) ?([a-zA-Z,\. ]*) ?([0-9]{5}) ?([a-zA-Z]*)/.test(addressValue)
+    return /^([0-9]*) ?([a-zA-Z,\. ]*) ?([0-9]{5}) ?([a-zA-Z]*)$/.test(addressValue)
 }
 
 function emailRegex(emailValue){
-    return / /.test(emailValue)
+    return /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(emailValue)
 }
 
 
- function postOrder() {
+function postOrder(order) {
     fetch('http://localhost:3000/api/products/order', {
         method: "POST",
         headers: { 
@@ -313,7 +323,11 @@ function emailRegex(emailValue){
     .then(function(data) {
         console.log(data)
         //localStorage.clear()
-        //localStorage.setItem('confirmId', data.id)           
+        localStorage.setItem('confirmOrderId', data.orderId)
+        
+        setTimeout(function() {
+            document.location.href = "confirmation.html"
+        }, 800)
     })
     .catch(function(error) {
         console.log('ERROR')
