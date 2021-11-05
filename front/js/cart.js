@@ -322,12 +322,11 @@ function postOrder(order) {
     })
     .then(function(data) {
         console.log(data)
-        //localStorage.clear()
+        localStorage.clear()
         localStorage.setItem('confirmOrderId', data.orderId)
-        
-        setTimeout(function() {
-            document.location.href = "confirmation.html"
-        }, 800)
+    })
+    .then(function() {
+        document.location.href = "confirmation.html"
     })
     .catch(function(error) {
         console.log('ERROR')
