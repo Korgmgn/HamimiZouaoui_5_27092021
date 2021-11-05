@@ -172,8 +172,8 @@ function formValidation(lsParsed) {
     form.addEventListener('submit', function(e) {
         e.preventDefault()
         	
-        let contact // objet contact
-        let order // array avec objet contact + id retourné par l'api ?
+        let contact
+        let order
 
         let products = lsParsed.map((item) => {
             return item.id
@@ -193,11 +193,6 @@ function formValidation(lsParsed) {
             order = {contact, products}
             console.log(order)
             postOrder(order)
-            
-
-            //fonction supprime l'ancien LS
-            //fonction créer lS contact & lS Id commande
-            //post request & redirect
         } else {
             alert('Un des champs est invalide')
         }        
@@ -213,80 +208,52 @@ function checkInputs() {
     const cityValue = city.value
     const emailValue = email.value
 
-    checkFirstName(firstNameValue)
-    checkLastName(lastNameValue)
-    checkAddress(addressValue)
-    checkCity(cityValue)
-    checkEmail(emailValue)
+    const firstNameMsg = document.getElementById('firstNameErrorMsg')
+    const lastNameMsg = document.getElementById('lastNameErrorMsg')
+    const addressMsg = document.getElementById('addressErrorMsg')
+    const cityMsg = document.getElementById('cityErrorMsg')
+    const emailMsg = document.getElementById('emailErrorMsg')
 
-    if(checkFirstName(firstNameValue) && checkLastName(lastNameValue) && checkAddress(addressValue) && checkCity(cityValue) && checkEmail(emailValue)) {
+
+    if(checkFormInput(firstNameValue, firstNameMsg) && checkFormInput(lastNameValue, lastNameMsg) && checkAddress(addressValue, addressMsg) && checkFormInput(cityValue, cityMsg) && checkEmail(emailValue, emailMsg)) {
         return true
     } else {
         return false
     }
 }
 
-function checkFirstName(firstNameValue){
-    const firstNameMsg = document.getElementById('firstNameErrorMsg')
+function checkFormInput(targetValue, errorDisplay){
 
-    if(firstNameValue == '') {
+    if(targetValue == '') {
         firstNameMsg.innerText = 'Ce champ est requis !'
-    } else if (!nameCityRegex(firstNameValue)) {
-        firstNameMsg.innerText = 'Des caractères sont invalides !'
+    } else if (!nameCityRegex(targetValue)) {
+        errorDisplay.innerText = 'Des caractères sont invalides !'
     } else {
-        firstNameMsg.innerText = 'Champ valide'
+        errorDisplay.innerText = 'Champ valide'
         return true
     }
 }
 
-function checkLastName(lastNameValue){
-    const lastNameMsg = document.getElementById('lastNameErrorMsg')
+function checkAddress(targetValue, errorDisplay){
 
-    if(lastNameValue == '') {
-        lastNameMsg.innerText = 'Ce champ est requis !'
-    } else if (!nameCityRegex(lastNameValue)) {
-        lastNameMsg.innerText = 'Des caractères sont invalides !'
+    if(targetValue == '') {
+        errorDisplay.innerText = 'Ce champ est requis !'
+    } else if (addressRegex(targetValue)) {
+        errorDisplay.innerText = 'Des caractères sont invalides !'
     } else {
-        lastNameMsg.innerText = 'Champ valide'
+        errorDisplay.innerText = 'Champ valide'
         return true
     }
 }
 
-function checkAddress(addressValue){
-    const addressMsg = document.getElementById('addressErrorMsg')
+function checkEmail(targetValue, errorDisplay){
 
-    if(addressValue == '') {
-        addressMsg.innerText = 'Ce champ est requis !'
-    } else if (addressRegex(addressValue)) {
-        addressMsg.innerText = 'Des caractères sont invalides !'
+    if(targetValue == '') {
+        errorDisplay.innerText = 'Ce champ est requis !'
+    } else if (!emailRegex(targetValue)) {
+        errorDisplay.innerText = 'Des caractères sont invalides !'
     } else {
-        addressMsg.innerText = 'Champ valide'
-        return true
-    }
-}
-
-function checkCity(cityValue){
-    const cityMsg = document.getElementById('cityErrorMsg')
-
-    if(cityValue == ''){
-        cityMsg.innerText = 'Ce champ est requis !'
-    } else if (!nameCityRegex(cityValue)) {
-        cityMsg.innerText = 'Des caractères sont invalides !'
-    } else {
-        cityMsg.innerText = 'Champ valide'
-        return true
-    }
-}
-
-function checkEmail(emailValue){
-    const emailMsg = document.getElementById('emailErrorMsg')
-
-    if(emailValue == '') {
-        emailMsg.innerText = 'Ce champ est requis !'
-     } else if (!emailRegex(emailValue)) {
-            emailMsg.innerText = 'Des caractères sont invalides !'
-    } else {
-        emailMsg.innerText = 'Champ valide'
+        errorDisplay.innerText = 'Champ valide'
         return true
     }
 }
@@ -322,11 +289,11 @@ function postOrder(order) {
     })
     .then(function(data) {
         console.log(data)
-        localStorage.clear()
+        //localStorage.clear()
         localStorage.setItem('confirmOrderId', data.orderId)
     })
     .then(function() {
-        document.location.href = "confirmation.html"
+        //document.location.href = "confirmation.html"
     })
     .catch(function(error) {
         console.log('ERROR')
