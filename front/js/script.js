@@ -1,3 +1,4 @@
+//Au chargement du contenu HTML, récupère la liste de produits depuis l'API
 document.addEventListener('DOMContentLoaded', function() {
     fetch('http://localhost:3000/api/products')
     .then(function(res) {
@@ -14,24 +15,22 @@ document.addEventListener('DOMContentLoaded', function() {
     })
 })
 
-
+//Utilise la réponse envoyée par l'API afin de créer autant d'éléments HTML qu'il y a de produits dans la liste
 function usefetchResult(data) {
-    console.log(data)
-
     const listContainer = document.getElementById('items')
 
     for(let i = 0; i < data.length; i++) {
         const couch = data[i]
 
         const itemLink = document.createElement('a')
-        itemLink.setAttribute('href', `./product.html?id=${couch._id}`)
+        itemLink.setAttribute('href', `./product.html?id=${couch._id}`) // Créé le lien de chaque produit vers sa page respective en utilisant son id
         listContainer.appendChild(itemLink)
 
         const itemCard = document.createElement('article')
         itemLink.appendChild(itemCard)
 
         const itemImg = document.createElement('img')
-        itemImg.setAttribute('src', couch.imageUrl) /* deuxième setAttribute pour ajouter alt en plus de src ? */
+        itemImg.setAttribute('src', couch.imageUrl)
         itemImg.setAttribute('alt', couch.altTxt)
         itemCard.appendChild(itemImg)
 

@@ -1,18 +1,18 @@
-let cartFromLs = localStorage.getItem("itemsInCart")
-let lsParsed = JSON.parse(cartFromLs)
-console.log(lsParsed)
+//Ces constantes récupèrent le localStorage existant.
+const cartFromLs = localStorage.getItem("itemsInCart")
+const lsParsed = JSON.parse(cartFromLs)
 
 main()
 
 function main(){
     displayCartItems(lsParsed)
     getQuantityPrice(lsParsed)
-    modifyQuantity(lsParsed)// mettre dans displayCartItems
-    deleteItem(lsParsed)// mettre dans displayCartItems
+    modifyQuantity(lsParsed)
+    deleteItem(lsParsed)
     formValidation(lsParsed)
 }
 
-//Récupère les éléments depuis le localStorage et affiche leurs données
+//Utilise le panier récupéré depuis le localStorage pour créer et remplir le contenu HTML de chaque produit présent
 function displayCartItems(lsParsed){
     
     const cartContent = document.getElementById('cart__items')
@@ -86,21 +86,16 @@ function displayCartItems(lsParsed){
     }
 }
 
-/*Récupère les quantités et les prix depuis le localStorage dans deux arrays séparés, 
-puis calcul le total et l'affiche dans le dom*/
+//Récupère les quantités et les prix des différents produits du panier puis les additionne pour afficher leur total.
 function getQuantityPrice(lsParsed){
         
     const totalQuantity = lsParsed.reduce((total, item) => {
         return total + item.quantity
     }, 0)
 
-    console.log('Quantité totale: ' + totalQuantity)
-
     const totalPrice = lsParsed.reduce((total, item) => {
         return total + item.price * item.quantity
     }, 0)
-
-    console.log('Prix total: ' + totalPrice + ' €')
 
     const quantityDisplay = document.getElementById('totalQuantity')
     const priceDisplay = document.getElementById('totalPrice')
@@ -109,33 +104,32 @@ function getQuantityPrice(lsParsed){
     priceDisplay.innerText = totalPrice
 }
 
-//Ecoute les changement de quantité et mettre à jour le localStorage
+//Ecoute les changement de quantité et mets à jour le localStorage
 
 function modifyQuantity(lsParsed){
     const itemQuantity = document.getElementsByClassName('itemQuantity')
 
-    console.log(itemQuantity)
     for(let i = 0; i < itemQuantity.length; i++) {
         const item = itemQuantity[i]
-
+        
         const itemContainerId = item.closest('article').getAttribute('data-id')
+        //Ici, on récupère dans foundItem les produits dans le panier qui ont un index et un id identique au produit dont on écoute l'event
         const foundItem = lsParsed.find(item => itemContainerId == item.id && item == lsParsed[i])
 
         item.addEventListener('change', function(e){
             const index = lsParsed.indexOf(foundItem)
-            console.log(item.value, itemContainerId, index)
             if(foundItem){
                 lsParsed[index].quantity = Number(e.target.value)
                 localStorage.setItem("itemsInCart", JSON.stringify(lsParsed))
                 getQuantityPrice(lsParsed)
-                console.log(lsParsed[index])
             }            
         })
     }
 }
 
 
-//Ecoute le clic sur le bouton "Supprimer", retire le html correspondant et enlève l'objet dans le localStorage
+
+//Ecoute le clic sur le bouton "Supprimer" pour effacer le html correspondant et enlève le produit du localStorage
 function deleteItem(lsParsed){
     const deleteContainer = document.getElementsByClassName('deleteItem')
     
@@ -153,13 +147,13 @@ function deleteItem(lsParsed){
                 itemContainer.remove()
                 lsParsed.splice(index, 1)
                 localStorage.setItem("itemsInCart", JSON.stringify(lsParsed))
-                console.log(lsParsed)
+                getQuantityPrice(lsParsed)
             }
         })
     }
 }
 
-
+//Au clic du bouton submit du formulaire, si les champs sont tous valides, un objet contact est créé et ajouté à l'objet order qui sera envoyé dans la requête à l'API
 function formValidation(lsParsed) {
 
     const form = document.getElementsByClassName('cart__order__form')[0]
@@ -179,8 +173,7 @@ function formValidation(lsParsed) {
             return item.id
         })
 
-        if(checkInputs()) {
-            console.log('Commande envoyée')
+        if(checkInputs()) {            
             
             contact = {
                 firstName: firstName.value,
@@ -191,7 +184,6 @@ function formValidation(lsParsed) {
             }
 
             order = {contact, products}
-            console.log(order)
             postOrder(order)
         } else {
             alert('Un des champs est invalide')
@@ -199,7 +191,7 @@ function formValidation(lsParsed) {
     })
 }
 
-
+//Si les fonctions de validation des formulaires sont tous valides, retourne vrai
 function checkInputs() {
 
     const firstNameValue = firstName.value
@@ -222,6 +214,7 @@ function checkInputs() {
     }
 }
 
+//Indique un message d'erreur si les champs sont vides ou les caractères ne respectent pas la regex utilisée, sinon retourne vrai
 function checkFormInput(targetValue, errorDisplay){
 
     if(targetValue == '') {
@@ -234,11 +227,12 @@ function checkFormInput(targetValue, errorDisplay){
     }
 }
 
+//Indique un message d'erreur si les champs sont vides ou les caractères ne respectent pas la regex utilisée, sinon retourne vrai
 function checkAddress(targetValue, errorDisplay){
 
     if(targetValue == '') {
         errorDisplay.innerText = 'Ce champ est requis !'
-    } else if (addressRegex(targetValue)) {
+    } else if (!addressRegex(targetValue)) {
         errorDisplay.innerText = 'Des caractères sont invalides !'
     } else {
         errorDisplay.innerText = 'Champ valide'
@@ -246,6 +240,7 @@ function checkAddress(targetValue, errorDisplay){
     }
 }
 
+//Indique un message d'erreur si les champs sont vides ou les caractères ne respectent pas la regex utilisée, sinon retourne vrai
 function checkEmail(targetValue, errorDisplay){
 
     if(targetValue == '') {
@@ -258,21 +253,22 @@ function checkEmail(targetValue, errorDisplay){
     }
 }
 
-
+//Valide le nom, prénom et ville
 function nameCityRegex(nameCityValue){
     return /^[A-Z-a-z\s]{3,40}$/.test(nameCityValue)
 }
-
+//Valide l'adresse postale
 function addressRegex(addressValue){
-    return /^([0-9]*) ?([a-zA-Z,\. ]*) ?([0-9]{5}) ?([a-zA-Z]*)$/.test(addressValue)
+    return /^([0-9]* [A-Za-zàâäéèêëïîôöùûüÿçœ,\.\-' ]*)$/.test(addressValue)
 }
-
+//Valide l'email
 function emailRegex(emailValue){
     return /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(emailValue)
 }
 
-
+//Envoi à l'API l'objet contenant les données du formulaire et un array contenant tous les id produit du panier
 function postOrder(order) {
+    let orderId
     fetch('http://localhost:3000/api/products/order', {
         method: "POST",
         headers: { 
@@ -287,15 +283,17 @@ function postOrder(order) {
             return res.json()
         }
     })
+    //Une fois la réponse de l'API reçue, le localStorage est vidé et on récupère le numéro de commande dans la variable orderId
     .then(function(data) {
-        console.log(data)
+        orderId = data.orderId
         //localStorage.clear()
-        localStorage.setItem('confirmOrderId', data.orderId)
     })
+    //On redirige vers la page de confirmation en spécifiant orderId comme variable dans l'url
     .then(function() {
-        //document.location.href = "confirmation.html"
+        //document.location.href = `./confirmation.html?orderId=${orderId}`
     })
     .catch(function(error) {
         console.log('ERROR')
     })
 }
+

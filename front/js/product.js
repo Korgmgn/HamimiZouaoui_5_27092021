@@ -1,6 +1,11 @@
-let urlParam = new URL(document.location)
-let itemId = urlParam.searchParams.get('id')
-let currentItem
+// Ces constantes récupèrent l'url de la page et l'id qu'elle contient afin de l'utiliser dans de la requête.
+const urlParam = new URL(document.location)
+const itemId = urlParam.searchParams.get('id')
+
+let currentItem //On attribue les données renvoyées par l'API à cette variable
+
+
+//Au chargement du contenu HTML, récupère les données du produit renvoyées par l'API en utilisant son id.
 document.addEventListener('DOMContentLoaded', function() {
     fetch(`http://localhost:3000/api/products/${itemId}`)
     .then(function(res) {
@@ -17,13 +22,13 @@ document.addEventListener('DOMContentLoaded', function() {
         addToCartClick()        
     })
     .catch(function(error) {
-        //console.log('ERROR')
+        console.log('ERROR')
     })
 })
 
-//Créé est rempli le DOM dynamiquement
+//Créé et rempli le contenu HTML avec le détail du produit renvoyé par l'API
 function displayItemData(currentItem){
-    let imgDiv = document.getElementsByClassName('item__img')
+    let imgDiv = document.getElementsByClassName('item__img') 
         imgDiv = imgDiv[0]
 
         const itemImg = document.createElement('img')
@@ -43,11 +48,11 @@ function displayItemData(currentItem){
         displayItemColors(currentItem)
 }
 
-//constantes utilisées dans les functions suivantes
+//Ces constantes ciblent les éléments HTML permettant l'input de la couleur et de la quantité
 const colorSelect = document.getElementById('colors') 
 const itemQty = document.getElementById('quantity')
 
-//Créé et rempli le DOM dynamiquement
+//Créé et rempli le contenu HTML affichant le déroulant de selection des couleurs
 function displayItemColors(currentItem){
     for(let i = 0; i < currentItem.colors.length; i++) {
         const couchColor = currentItem.colors[i]
@@ -65,9 +70,7 @@ let isColorTrue;    // Retourné par verifyColor puis utilisé dans addTocartCli
 //verifie si input couleur est valide
 function verifyColor(){
     colorSelect.addEventListener('change', function(e){
-        //console.log(e.target.value)
         if(e.target.value !== ""){
-            //console.log('couleur valide')
             isColorTrue = true
         } else {
             alert("Aucune couleur selectionnée")
@@ -82,9 +85,7 @@ let isQuantityTrue; // Retourné par verifyQuantity puis utilisé dans addTocart
 //verifie si input quantité est valide
 function verifyQuantity(){
     itemQty.addEventListener('change', function(e) {
-        //console.log(e.target.value)
         if(e.target.value > 0 && e.target.value <= 100){
-            //console.log('quantité valide')
             isQuantityTrue = true
         } else {
             alert('La quantité doit être comprise entre 1 et 100')
@@ -93,13 +94,12 @@ function verifyQuantity(){
     })
 }
 
-//Déclenché au clic du bouton, vérifie d'abord que couleur & quantité sont valides
+//Déclenché au clic du bouton d'ajout au panier, vérifie d'abord que couleur & quantité sont valides
 function addToCartClick(){
     const itemToCart = document.getElementById('addToCart')
 
     itemToCart.addEventListener('click', function(e){
         if(isColorTrue == true && isQuantityTrue == true){
-            //console.log('La couleur et la quantité sont valides')
             checkForCart()
         } else {
             alert('La couleur et la quantité doivent être valides')
@@ -107,10 +107,9 @@ function addToCartClick(){
     })
 }
 
-//Verifie si le localStorage existe
+//Verifie si le localStorage existe. S'il existe, il est modifié selon certaines conditions, sinon il est créé.
 function checkForCart(){
     const cartExists = localStorage.getItem("itemsInCart")
-    
     
     //Constante pour la création d'objet à mettre dans l'array cart
     let addedItem = { //a récupérer depuis le dom ou urlparams
@@ -124,27 +123,22 @@ function checkForCart(){
     }    
 
     if(cartExists != null){
-        //console.log('Le panier existe déjà')
         searchCartForId(cartExists, addedItem)
     } else {
-        //console.log('Le panier n\'existe pas')
         newLocalStorage(addedItem)
     }
 }
 
-//Si le localStorage existe, vérifie si un produit avec le même Id && couleur existe
+//Si le localStorage existe, vérifie si un produit avec le même Id && couleur existe déjà. S'il existe, la quantité est mise, sinon il est ajouté au panier existant.
 function searchCartForId(cartExists, addedItem){
     const parsedCart = JSON.parse(cartExists)
     const foundId = parsedCart.find(item => itemId == item.id && colorSelect.value == item.color)
-    //console.log(parsedCart)
 
     if(foundId){
         let newQuantityIncart  = Number(foundId.quantity) + Number(itemQty.value) 
         foundId.quantity = newQuantityIncart
         localStorage.setItem("itemsInCart", JSON.stringify(parsedCart))
-        //console.log('Cet objet existe déjà dans le panier, la quantité a été mise à jour')
     } else {
-        //console.log('Cet objet n\'existe pas encore dans le panier')
         updateLocalStorage(parsedCart, addedItem)        
     }
 }
@@ -154,7 +148,6 @@ function searchCartForId(cartExists, addedItem){
 function updateLocalStorage(parsedCart, addedItem){
     parsedCart.push(addedItem)
     localStorage.setItem("itemsInCart", JSON.stringify(parsedCart))
-    //console.log('Nouvel objet ajouté au panier existant')
 }
 
 //Si le localStorage n'existe pas, le premier objet et le localStorage sont créés
@@ -164,21 +157,4 @@ function newLocalStorage(addedItem){
 
     newCart.push(addedItem)
     localStorage.setItem("itemsInCart", JSON.stringify(newCart))
-    //console.log('Panier créé et premier objet ajouté')
 }
-
-
-
-
-
-/*
-
-Mémo
-Dans l'ordre:
-1-Verifier si l'input couleur est valide
-2-Verifier si l'input quantité est valide
-3-Au clic du bouton, si 1 & 2 sont vrais, vérifier si localStorage existe
-4-Si localStorage existe, ajouter l'input quantité au même ID
-5-Sinon, créer le nouvel objet et .push dans l'array cart
-6-mettre l'array cart dans le localstorage
-*/
