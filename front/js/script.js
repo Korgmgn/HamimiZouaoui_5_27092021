@@ -2,10 +2,10 @@
 document.addEventListener('DOMContentLoaded', function() {
     fetch('http://localhost:3000/api/products')
     .then(function(res) {
-            if (res.ok) {
-                console.log('SUCCESS')
-                return res.json()
-            }
+        if (res.ok) {
+            console.log('SUCCESS')
+            return res.json()
+        }
     })
     .then(function(data) {
         usefetchResult(data)           
