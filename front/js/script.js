@@ -2,10 +2,10 @@
 document.addEventListener('DOMContentLoaded', function() {
     fetch('http://localhost:3000/api/products')
     .then(function(res) {
-        if (res.ok) {
-            console.log('SUCCESS')
-            return res.json()
-        }
+            if (res.ok) {
+                console.log('SUCCESS')
+                return res.json()
+            }
     })
     .then(function(data) {
         usefetchResult(data)           
@@ -23,7 +23,7 @@ function usefetchResult(data) {
         const couch = data[i]
 
         const itemLink = document.createElement('a')
-        itemLink.setAttribute('href', `front/html/product.html?id=${couch._id}`) // Créé le lien de chaque produit vers sa page respective en utilisant son id
+        itemLink.setAttribute('href', `./product.html?id=${couch._id}`) // Créé le lien de chaque produit vers sa page respective en utilisant son id
         listContainer.appendChild(itemLink)
 
         const itemCard = document.createElement('article')
