@@ -286,11 +286,11 @@ function postOrder(order) {
     //Une fois la réponse de l'API reçue, le localStorage est vidé et on récupère le numéro de commande dans la variable orderId
     .then(function(data) {
         orderId = data.orderId
-        //localStorage.clear()
+        localStorage.clear()
     })
     //On redirige vers la page de confirmation en spécifiant orderId comme variable dans l'url
     .then(function() {
-        //document.location.href = `./confirmation.html?orderId=${orderId}`
+        document.location.href = `./confirmation.html?orderId=${orderId}`
     })
     .catch(function(error) {
         console.log('ERROR')
